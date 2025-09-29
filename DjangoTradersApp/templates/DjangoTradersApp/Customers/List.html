@@ -1,25 +1,74 @@
 {% extends "base.html" %} 
 
 {% block content %}
-	<h2 class="my-2" >All Customers</h2>
-
-	<ol class="list-group  small">
-	{% for customer in customers %}
-	<li class="list-item mt-2">
-        	<a href="{% url 'CustomerDetail' customer.customer_id %}">
-				
-            {{ customer.company_name }} [Contact: {{ customer.contact_name }}]
-        </a>
-			<div class="p3">{{ customer.get_contact_info }}</div>
-
-			<div class="p3">{{ customer.get_full_address }}</div>
-		</li>
-
-	{% empty %}
-		<li>No customers found.</li>
-	{% endfor %}
-
-	</ol>
-	
+<style>
+	.welcome-header {
+		background: linear-gradient(90deg, #009688 70%, #ff9800 100%);
+		color: #fff;
+	}
+	.welcome-btn {
+		background-color: #ff9800;
+		border-color: #ff9800;
+		color: #fff;
+		font-family: 'Segoe UI', 'Arial', sans-serif;
+	}
+	.welcome-btn:hover {
+		background-color: #fb8c00;
+		border-color: #fb8c00;
+		color: #fff;
+	}
+	.welcome-card {
+		border: 1px solid #009688;
+		border-radius: 18px;
+		font-family: 'Segoe UI', 'Arial', sans-serif;
+	}
+	.welcome-footer {
+		background: #e0f2f1;
+		color: #009688;
+		border-bottom-left-radius: 18px;
+		border-bottom-right-radius: 18px;
+	}
+</style>
+<div class="container mt-5">
+	<div class="row justify-content-center">
+		<div class="col-md-10">
+			<div class="card welcome-card shadow-lg mb-5">
+				<div class="card-header welcome-header text-center py-4 rounded-top">
+					<h2 class="mb-1">
+						<i class="fa fa-users me-2"></i>
+						All Customers
+					</h2>
+				</div>
+				<div class="card-body">
+											<form method="get" class="mb-4">
+												<div class="input-group">
+													<input type="text" name="search" class="form-control" placeholder="Search customers by any field..." value="{{ search }}">
+													<button type="submit" class="btn welcome-btn">Search</button>
+													<a href="{% url 'DjTraders.Customers' %}" class="btn btn-light ms-2" title="Clear search">
+														<i class="fa fa-times"></i>
+													</a>
+												</div>
+											</form>
+					<ol class="list-group small">
+						{% for customer in customers %}
+						<li class="list-group-item mt-2">
+							<a href="{% url 'CustomerDetail' customer.customer_id %}">
+								{{ customer.company_name }} [Contact: {{ customer.contact_name }}]
+							</a>
+							<div class="p3">{{ customer.get_contact_info }}</div>
+							<div class="p3">{{ customer.get_full_address }}</div>
+						</li>
+						{% empty %}
+						<li class="list-group-item">No customers found.</li>
+						{% endfor %}
+					</ol>
+				</div>
+				<div class="card-footer welcome-footer text-center">
+					<span class="small">Showing {{ customers|length }} customers</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 {% endblock %}
 

@@ -87,7 +87,7 @@ DATABASES = {
     # Connect to the PostgreSQL database
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "DjangoTradersBliss",
+        "NAME": "DjangoTraders2.0",
         "USER": "postgres",
         "PASSWORD": "sillypudy",
         "HOST": "localhost",

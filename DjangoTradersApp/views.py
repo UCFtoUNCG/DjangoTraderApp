@@ -1,3 +1,9 @@
+<<<<<<< HEAD
+=======
+# Home view for DjangoTradersApp
+def home(request):
+    return render(request, "DjangoTradersApp/welcome.html")
+>>>>>>> 5f51188 (Add product search, pagination, supplier info, and products page features)
 
 from django.views.generic import ListView, DetailView
 from django.shortcuts import render, get_object_or_404
@@ -12,6 +18,7 @@ class ProductsListView(ListView):
     paginate_by = 10
 
     def get_queryset(self):
+<<<<<<< HEAD
         queryset = super().get_queryset()
         name_search = self.request.GET.get("name", "")
         category_search = self.request.GET.get("category", "")
@@ -22,13 +29,29 @@ class ProductsListView(ListView):
             queryset = queryset.filter(category__category_name__icontains=category_search)
         if supplier_search:
             queryset = queryset.filter(supplier__company_name__icontains=supplier_search)
+=======
+        from django.db.models import Q
+        queryset = super().get_queryset()
+        search = self.request.GET.get("search", "")
+        if search:
+            queryset = queryset.filter(
+                Q(product_name__icontains=search) |
+                Q(category__category_name__icontains=search) |
+                Q(supplier__company_name__icontains=search) |
+                Q(quantity_per_unit__icontains=search)
+            )
+>>>>>>> 5f51188 (Add product search, pagination, supplier info, and products page features)
         return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+<<<<<<< HEAD
         context["name_search"] = self.request.GET.get("name", "")
         context["category_search"] = self.request.GET.get("category", "")
         context["supplier_search"] = self.request.GET.get("supplier", "")
+=======
+        context["search"] = self.request.GET.get("search", "")
+>>>>>>> 5f51188 (Add product search, pagination, supplier info, and products page features)
         return context
 
 # Product detail view
@@ -53,10 +76,33 @@ class OrdersListView(DetailView):
         return context
 
 # Create your views here.
+<<<<<<< HEAD
 def home(request):
+=======
+
+from django.db.models import Q
+
+def CustomersList(request):
+    search = request.GET.get("search", "")
+    customers = Customers.objects.all()
+    if search:
+        customers = customers.filter(
+            Q(company_name__icontains=search) |
+            Q(contact_name__icontains=search) |
+            Q(contact_title__icontains=search) |
+            Q(address__icontains=search) |
+            Q(city__icontains=search) |
+            Q(region__icontains=search) |
+            Q(postal_code__icontains=search) |
+            Q(country__icontains=search) |
+            Q(phone__icontains=search) |
+            Q(fax__icontains=search)
+        )
+>>>>>>> 5f51188 (Add product search, pagination, supplier info, and products page features)
     return render(
-        request=request,
-        template_name="DjangoTradersApp/welcome.html",
+        request,
+        "DjangoTradersApp/Customers/List.html",
+        {"customers": customers, "search": search}
     )
 
 # region Function-based customer views
@@ -65,7 +111,9 @@ def CustomersList(request):
     View function to display all customers, optionally filtered by search.
     Supports case-insensitive, partial search on company_name, contact_title, and country.
     """
+    search = request.GET.get("search", "")
     customers = Customers.objects.all()
+<<<<<<< HEAD
 
     customer_search = request.GET.get("customer", "")
     title_search = request.GET.get("title", "")
@@ -88,6 +136,25 @@ def CustomersList(request):
             "search_country": country_search,
                 "available_countries": Customers.get_all_countries(),
         },
+=======
+    if search:
+        customers = customers.filter(
+            Q(company_name__icontains=search) |
+            Q(contact_name__icontains=search) |
+            Q(contact_title__icontains=search) |
+            Q(address__icontains=search) |
+            Q(city__icontains=search) |
+            Q(region__icontains=search) |
+            Q(postal_code__icontains=search) |
+            Q(country__icontains=search) |
+            Q(phone__icontains=search) |
+            Q(fax__icontains=search)
+        )
+    return render(
+        request,
+        "DjangoTradersApp/Customers/List.html",
+        {"customers": customers, "search": search}
+>>>>>>> 5f51188 (Add product search, pagination, supplier info, and products page features)
     )
 
 def CustomerDetail(request, customer_id):
@@ -99,6 +166,7 @@ def CustomerDetail(request, customer_id):
     customer = Customers.objects.get(customer_id=customer_id)
     orders = Orders.objects.filter(customer=customer)
     products = Products.objects.filter(orderdetails__order__in=orders).distinct()
+<<<<<<< HEAD
     return render(
         request=request,
         template_name="DjangoTradersApp/Customers/Detail.html",
@@ -108,6 +176,30 @@ def CustomerDetail(request, customer_id):
             "products": products,
             "orders_count": orders.count(),
             "products_count": products.count(),
+=======
+    order_details = customer.get_order_details()
+    products_count = customer.get_products_count()
+    orders_count = customer.get_orders_count()
+    search = request.GET.get("search", "")
+    if search:
+        search_lower = search.lower()
+        order_details = [detail for detail in order_details if (
+            search_lower in detail.product.product_name.lower() or
+            search_lower in str(detail.unit_price).lower() or
+            search_lower in str(detail.quantity).lower() or
+            search_lower in str(detail.discount).lower()
+        )]
+    return render(
+        request,
+        "DjangoTradersApp/Customers/Detail.html",
+        {
+            "customer": customer,
+            "orders": orders,
+            "order_details": order_details,
+            "products_count": products_count,
+            "orders_count": orders_count,
+            "search": search,
+>>>>>>> 5f51188 (Add product search, pagination, supplier info, and products page features)
         },
     )
 
