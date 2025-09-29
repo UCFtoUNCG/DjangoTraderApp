@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow-lg mx-auto" style="max-width: 700px;">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0">Product Details</h3>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered table-striped">
+                <tr>
+                    <th>Product ID</th>
+                    <td>{{ product.product_id }}</td>
+                </tr>
+                <tr>
+                    <th>Name</th>
+                    <td>{{ product.product_name }}</td>
+                </tr>
+                <tr>
+                    <th>Category</th>
+                    <td>{{ product.category.category_name }}</td>
+                </tr>
+                <tr>
+                    <th>Unit Price</th>
+                    <td>${{ product.unit_price|floatformat:2 }}</td>
+                </tr>
+                <tr>
+                    <th>Units In Stock</th>
+                    <td>{{ product.units_in_stock }}</td>
+                </tr>
+                <tr>
+                    <th>Quantity Per Unit</th>
+                    <td>{{ product.quantity_per_unit }}</td>
+                </tr>
+                <tr>
+                    <th>Supplier</th>
+                    <td>
+                        <strong>{{ product.supplier.company_name }}</strong><br>
+                        {% if product.supplier.contact_name %}
+                            Contact: {{ product.supplier.contact_name }} ({{ product.supplier.contact_title }})<br>
+                        {% endif %}
+                        {% if product.supplier.address %}
+                            Address: {{ product.supplier.address }}, {{ product.supplier.city }}, {{ product.supplier.region }}, {{ product.supplier.postal_code }}, {{ product.supplier.country }}<br>
+                        {% endif %}
+                        {% if product.supplier.phone %}
+                            Phone: {{ product.supplier.phone }}<br>
+                        {% endif %}
+                        {% if product.supplier.fax %}
+                            Fax: {{ product.supplier.fax }}<br>
+                        {% endif %}
+                        {% if product.supplier.homepage %}
+                            Homepage: <a href="{{ product.supplier.homepage }}" target="_blank">{{ product.supplier.homepage }}</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="card-footer text-end">
+            <a href="{% url 'DjTraders.Products' %}" class="btn btn-secondary">Back to Products</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

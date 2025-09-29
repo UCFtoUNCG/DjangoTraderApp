@@ -1,3 +1,4 @@
+
 from django.urls import path
 from . import views
 
@@ -15,6 +16,21 @@ urlpatterns = [
         'DjTraders/Customers', 
          views.CustomerListView.as_view(), 
          name='DjTraders.Customers'),
+
+	path(
+		'DjTraders/Products',
+		 views.ProductsListView.as_view(),
+		 name='DjTraders.Products'),
+
+	path(
+		'DjTraders/ProductDetail/<str:product_id>/',
+		 views.ProductDetailView.as_view(),
+		 name='DjTraders.ProductDetail'),
+
+	path(
+		'DjTraders/CustomerOrders/<str:customer_id>/',
+		 views.OrdersListView.as_view(),
+		 name='DjTraders.CustomerOrders'),
 
     path(
         'DjTraders/CustomerDetail/<str:customer_id>/', 

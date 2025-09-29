@@ -1,39 +1,68 @@
-<!-- tell the page to "use" the base template -->
 {% extends "base.html" %}
 
-<!-- define the block content to be injected -->
 {% block content %}
-
-<div class="container">
-  <div class="navbar mb-4">
-    <h6>Django Traders </h6>
-
-    <div class="text-muted badge badge-secondary small">{{ today }}.</div>
-  </div>
-
-  <div class="my-5 navbar">
-
-    <div class="p-2 rounded-2  border-0 w3-hover-shadow">
-      <a href="{% url 'CustomersList' %}" class="text-decoration-none">
-        View All Customers [Function based View]
-      </a>
-      <br/>
-      <div class="text-success fw-bold">
-        USE THIS FIRST 
+<style>
+  /* Custom color overrides for the card */
+  .welcome-header {
+    background: linear-gradient(90deg, #009688 70%, #ff9800 100%);
+    color: #fff;
+  }
+  .welcome-btn {
+    background-color: #ff9800;
+    border-color: #ff9800;
+    color: #fff;
+  }
+  .welcome-btn:hover {
+    background-color: #fb8c00;
+    border-color: #fb8c00;
+    color: #fff;
+  }
+  .welcome-card {
+    border: 1px solid #009688;
+    border-radius: 18px;
+  }
+  .welcome-footer {
+    background: #e0f2f1;
+    color: #009688;
+    border-bottom-left-radius: 18px;
+    border-bottom-right-radius: 18px;
+  }
+</style>
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card welcome-card shadow-lg mb-5">
+        <div class="card-header welcome-header text-center py-4 rounded-top">
+          <h2 class="mb-1">
+            <i class="fa fa-leaf me-2"></i>
+            Django Traders
+          </h2>
+          <span class="badge bg-light text-dark mt-2">{{ today }}</span>
+        </div>
+        <div class="card-body text-center">
+          <p class="lead mb-4" style="color: #009688;">
+            Welcome to <strong>Django Traders</strong>!  
+            Your hub for managing customers and orders with ease.
+          </p>
+          <a href="{% url 'DjTraders.Customers' %}" class="btn btn-lg welcome-btn w-75 mb-3">
+            <i class="fa fa-users me-2"></i>
+            Browse All Customers
+          </a>
+          <a href="{% url 'DjTraders.Products' %}" class="btn btn-lg welcome-btn w-75 mb-3">
+            <i class="fa fa-boxes me-2"></i>
+            Browse All Products
+          </a>
+          <div class="fw-bold mb-2" style="color: #ff9800;">
+            Start here to view, search, and manage all customer data!
+          </div>
+        </div>
+        <div class="card-footer text-end welcome-footer border-0">
+          <small>
+            Powered by The Mind of Austin Bliss | &copy; {{ today|date:"Y" }}
+          </small>
+        </div>
       </div>
     </div>
-
-    <div class="p-2 rounded-2 border-0 w3-hover-shadow">
-      <a href="{% url 'DjTraders.Customers' %}" class="text-decoration-none">
-        All Customers Index [Class based View]
-      </a>
-      <br/>
-      <div class=" text-warning fw-bold">
-        THIS IS NEXT
-      </div>
-    </div>
-
   </div>
-
-  {% endblock %}
 </div>
+{% endblock %}

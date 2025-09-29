@@ -34,7 +34,16 @@
 					</select>
 				</div>
 			</div>
-			
+
+			<!--Search by Title-->
+			<div class="nav-item me-1">
+				<input type="text"
+					   name="title"
+					   class="form-control me-2"
+					   placeholder="Search by title..."
+					   value="{{ search_title }}">
+			</div>
+
 			<!-- Search and Clear Buttons-->
 			<div class="nav ms-2">
 				<button type="submit" class="btn btn-light ">
@@ -57,6 +66,7 @@
 		   id="CustomersTable" width="100%">
 		<thead>
 			<tr class="">
+				<th></th>	
 				<th class="my-2 text-center" style=""> Customer </th>
 				<th class="ps-1" style=""> Contact</th>
 				<th class="" style=""> Title </th>	
@@ -67,10 +77,45 @@
 			</tr>
 		</thead>
 
+		<nav aria-label="Customer pages">
+  <ul class="pagination justify-content-center">
+    {% if page_obj.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_customer %}&customer={{ search_customer }}{% endif %}{% if search_title %}&title={{ search_title }}{% endif %}{% if search_country %}&country={{ search_country }}{% endif %}" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+    {% else %}
+      <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+    {% endif %}
+
+    {% for num in paginator.page_range %}
+      {% if page_obj.number == num %}
+        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+      {% else %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ num }}{% if search_customer %}&customer={{ search_customer }}{% endif %}{% if search_title %}&title={{ search_title }}{% endif %}{% if search_country %}&country={{ search_country }}{% endif %}">{{ num }}</a>
+        </li>
+      {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_customer %}&customer={{ search_customer }}{% endif %}{% if search_title %}&title={{ search_title }}{% endif %}{% if search_country %}&country={{ search_country }}{% endif %}" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+    {% else %}
+      <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+    {% endif %}
+  </ul>
+</nav>
+
 		<tbody class="small">
 
 			{% for customer in customers %}
 			<tr >
+				<td>{{forloop.counter}}</td>
 				<td class="p-2">{{customer.company_name}}</td>
 				<td class="p-2">{{customer.contact_name}}</td>
 				<td class="p-2">{{customer.contact_title}}</td>
@@ -99,11 +144,11 @@
 	{% endif %}
 </div>
 
-
 <script type="text/javascript">
 $(document).ready(function() {
   $('#CustomersTable').DataTable({
     paging: true,         // Enable pagination
+	pagingType: 'simple_numbers', // Simple pagination controls
     searching: true,      // Enable search box
     ordering: true,       // Enable column sorting
     pageLength: 10,       // Show 10 rows per page
@@ -113,4 +158,5 @@ $(document).ready(function() {
   });
 });
 </script>
+
 {% endblock %}

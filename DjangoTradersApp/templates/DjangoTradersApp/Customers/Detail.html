@@ -1,49 +1,67 @@
 {% extends "base.html" %}
 
 {% block content %}
-	<div class="container mt-5">
-
-		<div class="card mx-auto shadow-lg" style="max-width: 600px;">
-		<div class="card-body my-2">
-
-			<h2 class="card-title my-4">Customer: {{ customer.company_name }}</h2>
-
-			<table class="table table-hover">
-				<tbody>
-					<tr>
-						<th scope="row">Name</th>
-						<td>{{ customer.company_name }}</td>
-					</tr>
-					<tr>
-						<th scope="row">Contact</th>
-						<td>{{ customer.get_contact_info }}</td>
-					</tr>
-					<tr>
-						<th scope="row">Address</th>
-						<td>{{ customer.get_full_address }}</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-
-			<div class="card-footer bg-white small">
-				<div class="nav">
-					<div class="p-2 rounded-2 btn bg-light w3-hover-shadow">
-						<a href="{% url 'CustomersList' %}"
-								class="btn btn-secondary mt-4">
-								All Customers [Function]
-								</a>
-					</div>
-					<div class="p-2 rounded-2 btn bg-light w3-hover-shadow">
-						<a href="{% url 'DjTraders.Customers' %}"
-								class="btn btn-secondary mt-4 ">
-								Customers Index [Class]
-								</a>
-					</div>
-				</div>
-			</div>
-
-	</div>
-	</div>
-
+<div class="container mt-5">
+    <div class="card shadow-lg mx-auto" style="max-width: 700px;">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0">Customer Details</h3>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered table-striped">
+                <tr>
+                    <th>Name</th>
+                    <td>{{ customer.company_name }}</td>
+                </tr>
+                <tr>
+                    <th>Contact</th>
+                    <td>{{ customer.get_contact_info }}</td>
+                </tr>
+                <tr>
+                    <th>Address</th>
+                    <td>{{ customer.get_full_address }}</td>
+                </tr>
+            </table>
+            <div class="row text-center my-4">
+                <div class="col">
+                    <a href="{% url 'DjTraders.CustomerOrders' customer_id=customer.customer_id %}" class="btn btn-success fs-5">
+                        Orders Placed: {{ orders_count }}
+                    </a>
+                </div>
+                <div class="col">
+                    <span class="badge bg-info fs-5">Products Purchased: {{ products_count }}</span>
+                </div>
+            </div>
+            <h5 class="mt-4">Products List:</h5>
+            <table class="table table-bordered table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Product</th>
+                        <th>Unit Price</th>
+                        <th>Quantity</th>
+                        <th>Discount (%)</th>
+                        <th>Total Cost</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for detail in order_details %}
+                    <tr>
+                        <td>{{ detail.product.product_name }}</td>
+                        <td>${{ detail.unit_price|floatformat:2 }}</td>
+                        <td>{{ detail.quantity }}</td>
+                        <td>{{ detail.discount|floatformat:2 }}</td>
+                        <td>${{ detail.line_total|floatformat:2 }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-muted">No products purchased.</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer text-end">
+            <a href="{% url 'DjTraders.Customers' %}" class="btn btn-secondary">Back to Customers</a>
+        </div>
+    </div>
+</div>
 {% endblock %}

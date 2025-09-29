@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow-lg mx-auto" style="max-width: 900px;">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0">Orders Placed for {{ customer.company_name }}</h3>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Order Date</th>
+                        <th>Required Date</th>
+                        <th>Shipped Date</th>
+                        <th>Freight</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for order in orders %}
+                    <tr>
+                        <td>{{ order.order_id }}</td>
+                        <td>{{ order.order_date }}</td>
+                        <td>{{ order.required_date }}</td>
+                        <td>{{ order.shipped_date }}</td>
+                        <td>${{ order.freight|floatformat:2 }}</td>
+                        <td>${{ order.order_total|floatformat:2 }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-muted">No orders placed.</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer text-end">
+            <a href="{% url 'DjTraders.CustomerDetail' customer_id=customer.customer_id %}" class="btn btn-secondary">Back to Customer Details</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
