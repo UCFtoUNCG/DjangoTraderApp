@@ -1,10 +1,11 @@
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse_lazy
 from django.db.models import Q
 from django.contrib import messages
 from datetime import date
 from .models import Customers, Orders, Products, OrderDetails, Employees, Shippers
-from .forms import CustomerSelectionForm, ProductSelectionForm, OrderDetailsForm
+from .forms import CustomerSelectionForm, ProductSelectionForm, OrderDetailsForm, ProductForm
 
 
 # Home view for DjangoTradersApp
@@ -43,6 +44,43 @@ class ProductDetailView(DetailView):
     template_name = "DjangoTradersApp/Products/details.html"
     context_object_name = "product"
     pk_url_kwarg = "product_id"
+
+
+# Product create view
+class ProductCreateView(CreateView):
+    """View for creating a new product."""
+    model = Products
+    form_class = ProductForm
+    template_name = "DjangoTradersApp/Products/create.html"
+    success_url = reverse_lazy('DjTraders.Products')
+
+    def form_valid(self, form):
+        messages.success(self.request, f"Product '{form.instance.product_name}' has been created successfully!")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, "Please correct the errors below.")
+        return super().form_invalid(form)
+
+
+# Product update view
+class ProductUpdateView(UpdateView):
+    """View for updating an existing product."""
+    model = Products
+    form_class = ProductForm
+    template_name = "DjangoTradersApp/Products/edit.html"
+    pk_url_kwarg = "product_id"
+
+    def get_success_url(self):
+        return reverse_lazy('DjTraders.ProductDetail', kwargs={'product_id': self.object.product_id})
+
+    def form_valid(self, form):
+        messages.success(self.request, f"Product '{form.instance.product_name}' has been updated successfully!")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, "Please correct the errors below.")
+        return super().form_invalid(form)
 
 
 # Orders list view for a customer
