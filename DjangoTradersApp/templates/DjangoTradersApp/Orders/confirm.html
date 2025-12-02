@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .order-header {
+        background: linear-gradient(90deg, #009688 70%, #ff9800 100%);
+        color: #fff;
+    }
+    .order-btn {
+        background-color: #ff9800;
+        border-color: #ff9800;
+        color: #fff;
+    }
+    .order-btn:hover {
+        background-color: #fb8c00;
+        border-color: #fb8c00;
+        color: #fff;
+    }
+    .order-card {
+        border: 1px solid #009688;
+        border-radius: 18px;
+    }
+    .confirm-section {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card order-card shadow-lg mb-5">
+                <div class="card-header order-header text-center py-4">
+                    <h3 class="mb-0">
+                        <i class="fa fa-clipboard-check me-2"></i>
+                        Order Confirmation
+                    </h3>
+                </div>
+                <div class="card-body">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <div class="alert alert-info">
+                        <i class="fa fa-info-circle me-2"></i>
+                        Please review your order before confirming.
+                    </div>
+
+                    <!-- Customer Information -->
+                    <div class="confirm-section">
+                        <h5><i class="fa fa-user me-2"></i>Customer Information</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Company:</strong> {{ customer.company_name }}
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Contact:</strong> {{ customer.contact_name }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Order Details -->
+                    <div class="confirm-section">
+                        <h5><i class="fa fa-file-alt me-2"></i>Order Details</h5>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <strong>Employee:</strong> {{ employee.first_name }} {{ employee.last_name }}
+                            </div>
+                            <div class="col-md-4">
+                                <strong>Required Date:</strong> {{ order_details.required_date }}
+                            </div>
+                            <div class="col-md-4">
+                                <strong>Shipper:</strong> {{ shipper.company_name }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Shipping Information -->
+                    <div class="confirm-section">
+                        <h5><i class="fa fa-truck me-2"></i>Shipping Information</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Ship To:</strong> {{ order_details.ship_name }}
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Address:</strong> {{ order_details.ship_address }}
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-4">
+                                <strong>City:</strong> {{ order_details.ship_city }}
+                            </div>
+                            <div class="col-md-4">
+                                <strong>Region:</strong> {{ order_details.ship_region }}
+                            </div>
+                            <div class="col-md-4">
+                                <strong>Postal Code:</strong> {{ order_details.ship_postal_code }}
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-4">
+                                <strong>Country:</strong> {{ order_details.ship_country }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Order Items -->
+                    <div class="confirm-section">
+                        <h5><i class="fa fa-shopping-cart me-2"></i>Order Items</h5>
+                        <table class="table table-bordered">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Unit Price</th>
+                                    <th>Quantity</th>
+                                    <th>Discount</th>
+                                    <th>Line Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in cart_items %}
+                                    <tr>
+                                        <td>{{ item.product_name }}</td>
+                                        <td>${{ item.unit_price|floatformat:2 }}</td>
+                                        <td>{{ item.quantity }}</td>
+                                        <td>{{ item.discount|floatformat:1 }}%</td>
+                                        <td>${{ item.line_total|floatformat:2 }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr class="table-success">
+                                    <th colspan="4" class="text-end">Order Total:</th>
+                                    <th>${{ cart_total|floatformat:2 }}</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex justify-content-between mt-4">
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="cancel">
+                            <button type="submit" class="btn btn-secondary">
+                                <i class="fa fa-times me-2"></i>Cancel Order
+                            </button>
+                        </form>
+                        <div>
+                            <a href="{% url 'DjTraders.OrderCreate' %}?step=3" class="btn btn-outline-secondary me-2">
+                                <i class="fa fa-arrow-left me-2"></i>Back to Edit
+                            </a>
+                            <form method="post" style="display: inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="confirm">
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fa fa-check me-2"></i>Confirm Order
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
