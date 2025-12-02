@@ -28,6 +28,16 @@ urlpatterns = [
 		 name='DjTraders.ProductDetail'),
 
 	path(
+		'DjTraders/Products/Create/',
+		 views.ProductCreateView.as_view(),
+		 name='DjTraders.ProductCreate'),
+
+	path(
+		'DjTraders/Products/<str:product_id>/Edit/',
+		 views.ProductUpdateView.as_view(),
+		 name='DjTraders.ProductEdit'),
+
+	path(
 		'DjTraders/CustomerOrders/<str:customer_id>/',
 		 views.OrdersListView.as_view(),
 		 name='DjTraders.CustomerOrders'),
