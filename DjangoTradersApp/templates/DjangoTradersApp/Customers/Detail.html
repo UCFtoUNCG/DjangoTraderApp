@@ -1,49 +1,163 @@
 {% extends "base.html" %}
 
 {% block content %}
-	<div class="container mt-5">
+<style>
+    .customer-header {
+        background: linear-gradient(90deg, #009688 70%, #ff9800 100%);
+        color: #fff;
+    }
+    .customer-btn {
+        background-color: #ff9800;
+        border-color: #ff9800;
+        color: #fff;
+    }
+    .customer-btn:hover {
+        background-color: #fb8c00;
+        border-color: #fb8c00;
+        color: #fff;
+    }
+    .customer-card {
+        border: 1px solid #009688;
+        border-radius: 18px;
+    }
+    .info-section {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+</style>
 
-		<div class="card mx-auto shadow-lg" style="max-width: 600px;">
-		<div class="card-body my-2">
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-11">
+            <div class="card customer-card shadow-lg mb-5">
+                <div class="card-header customer-header text-center py-4">
+                    <h3 class="mb-0">
+                        <i class="fa fa-building me-2"></i>
+                        {{ customer.company_name }}
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <!-- Customer Information -->
+                    <div class="info-section">
+                        <h5><i class="fa fa-user me-2"></i>Customer Information</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <table class="table table-borderless">
+                                    <tr>
+                                        <th>Customer ID:</th>
+                                        <td>{{ customer.customer_id }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Company Name:</th>
+                                        <td>{{ customer.company_name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Contact Name:</th>
+                                        <td>{{ customer.contact_name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Contact Title:</th>
+                                        <td>{{ customer.contact_title }}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <table class="table table-borderless">
+                                    <tr>
+                                        <th>Address:</th>
+                                        <td>{{ customer.get_full_address }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Phone:</th>
+                                        <td>{{ customer.phone }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Fax:</th>
+                                        <td>{{ customer.fax }}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="text-center mt-3">
+                            <a href="{% url 'DjTraders.OrderCreateForCustomer' customer_id=customer.customer_id %}" class="btn customer-btn btn-lg">
+                                <i class="fa fa-shopping-cart me-2"></i>Place New Order
+                            </a>
+                        </div>
+                    </div>
 
-			<h2 class="card-title my-4">Customer: {{ customer.company_name }}</h2>
+                    <!-- Order Statistics -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card text-center bg-light">
+                                <div class="card-body">
+                                    <h3 class="text-primary">{{ orders_count }}</h3>
+                                    <p class="mb-0">Total Orders</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card text-center bg-light">
+                                <div class="card-body">
+                                    <h3 class="text-success">{{ products_count }}</h3>
+                                    <p class="mb-0">Products Ordered</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-			<table class="table table-hover">
-				<tbody>
-					<tr>
-						<th scope="row">Name</th>
-						<td>{{ customer.company_name }}</td>
-					</tr>
-					<tr>
-						<th scope="row">Contact</th>
-						<td>{{ customer.get_contact_info }}</td>
-					</tr>
-					<tr>
-						<th scope="row">Address</th>
-						<td>{{ customer.get_full_address }}</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
+                    <!-- Order History -->
+                    <div class="info-section">
+                        <h5><i class="fa fa-history me-2"></i>Order History</h5>
+                        {% if orders %}
+                            <table class="table table-bordered table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>Order Date</th>
+                                        <th>Required Date</th>
+                                        <th>Shipped Date</th>
+                                        <th>Shipper</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for order in orders %}
+                                        <tr>
+                                            <td>{{ order.order_id }}</td>
+                                            <td>{{ order.order_date }}</td>
+                                            <td>{{ order.required_date }}</td>
+                                            <td>{{ order.shipped_date|default:"-" }}</td>
+                                            <td>{{ order.ship_via.company_name|default:"-" }}</td>
+                                            <td>${{ order.order_total|floatformat:2 }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        {% else %}
+                            <p class="text-muted text-center">No orders found for this customer.</p>
+                        {% endif %}
+                    </div>
+                </div>
 
-			<div class="card-footer bg-white small">
-				<div class="nav">
-					<div class="p-2 rounded-2 btn bg-light w3-hover-shadow">
-						<a href="{% url 'CustomersList' %}"
-								class="btn btn-secondary mt-4">
-								All Customers [Function]
-								</a>
-					</div>
-					<div class="p-2 rounded-2 btn bg-light w3-hover-shadow">
-						<a href="{% url 'DjTraders.Customers' %}"
-								class="btn btn-secondary mt-4 ">
-								Customers Index [Class]
-								</a>
-					</div>
-				</div>
-			</div>
-
-	</div>
-	</div>
-
+                <div class="card-footer bg-white">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <a href="{% url 'CustomersList' %}" class="btn btn-secondary">
+                                <i class="fa fa-arrow-left me-2"></i>All Customers [Function]
+                            </a>
+                            <a href="{% url 'DjTraders.Customers' %}" class="btn btn-secondary ms-2">
+                                <i class="fa fa-list me-2"></i>Customers Index [Class]
+                            </a>
+                        </div>
+                        <a href="{% url 'DjTraders.CustomerOrders' customer_id=customer.customer_id %}" class="btn btn-info">
+                            <i class="fa fa-file-alt me-2"></i>View Orders Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

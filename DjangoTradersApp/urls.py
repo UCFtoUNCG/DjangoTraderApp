@@ -50,7 +50,40 @@ urlpatterns = [
 		route="customers/<str:customer_id>/",
 		view=views.CustomerDetail,
 		name="CustomerDetail"
-	)
+	),
 
 	#endregion Class Based View URLs
+
+	#region Order Placement URLs
+	path(
+		'DjTraders/Orders/Create/',
+		views.order_create,
+		name='DjTraders.OrderCreate'
+	),
+
+	path(
+		'DjTraders/Orders/Create/<str:customer_id>/',
+		views.order_create,
+		name='DjTraders.OrderCreateForCustomer'
+	),
+
+	path(
+		'DjTraders/Orders/Confirm/',
+		views.order_confirm,
+		name='DjTraders.OrderConfirm'
+	),
+
+	path(
+		'DjTraders/Orders/Success/<int:order_id>/',
+		views.order_success,
+		name='DjTraders.OrderSuccess'
+	),
+
+	path(
+		'DjTraders/Orders/Cancel/',
+		views.order_cancel,
+		name='DjTraders.OrderCancel'
+	),
+
+	#endregion Order Placement URLs
 ]

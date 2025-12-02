@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .success-header {
+        background: linear-gradient(90deg, #4caf50 70%, #8bc34a 100%);
+        color: #fff;
+    }
+    .success-card {
+        border: 1px solid #4caf50;
+        border-radius: 18px;
+    }
+    .success-icon {
+        font-size: 80px;
+        color: #4caf50;
+    }
+    .order-section {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card success-card shadow-lg mb-5">
+                <div class="card-header success-header text-center py-4">
+                    <h3 class="mb-0">
+                        <i class="fa fa-check-circle me-2"></i>
+                        Order Placed Successfully!
+                    </h3>
+                </div>
+                <div class="card-body text-center">
+                    <div class="success-icon mb-4">
+                        <i class="fa fa-check-circle"></i>
+                    </div>
+                    <h2 class="text-success mb-3">Thank You!</h2>
+                    <p class="lead">Your order has been placed successfully.</p>
+                    <p class="h4 mb-4">Order #{{ order.order_id }}</p>
+
+                    <!-- Order Summary -->
+                    <div class="text-start">
+                        <div class="order-section">
+                            <h5><i class="fa fa-info-circle me-2"></i>Order Information</h5>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <strong>Order Date:</strong> {{ order.order_date }}
+                                </div>
+                                <div class="col-md-4">
+                                    <strong>Required Date:</strong> {{ order.required_date }}
+                                </div>
+                                <div class="col-md-4">
+                                    <strong>Customer:</strong> {{ order.customer.company_name }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="order-section">
+                            <h5><i class="fa fa-shopping-cart me-2"></i>Order Items</h5>
+                            <table class="table table-bordered">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Unit Price</th>
+                                        <th>Quantity</th>
+                                        <th>Discount</th>
+                                        <th>Line Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for detail in order_details %}
+                                        <tr>
+                                            <td>{{ detail.product.product_name }}</td>
+                                            <td>${{ detail.unit_price|floatformat:2 }}</td>
+                                            <td>{{ detail.quantity }}</td>
+                                            <td>{{ detail.discount|floatformat:1 }}%</td>
+                                            <td>${{ detail.line_total|floatformat:2 }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                                <tfoot>
+                                    <tr class="table-success">
+                                        <th colspan="4" class="text-end">Order Total:</th>
+                                        <th>${{ total|floatformat:2 }}</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+
+                        <div class="order-section">
+                            <h5><i class="fa fa-truck me-2"></i>Shipping Details</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <strong>Ship To:</strong> {{ order.ship_name }}
+                                </div>
+                                <div class="col-md-6">
+                                    <strong>Shipper:</strong> {{ order.ship_via.company_name }}
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-md-12">
+                                    <strong>Address:</strong> 
+                                    {{ order.ship_address }}, {{ order.ship_city }}{% if order.ship_region %}, {{ order.ship_region }}{% endif %} {{ order.ship_postal_code }}, {{ order.ship_country }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex justify-content-center gap-3 mt-4">
+                        <a href="{% url 'DjTraders.Products' %}" class="btn btn-primary">
+                            <i class="fa fa-box me-2"></i>Continue Shopping
+                        </a>
+                        <a href="{% url 'DjTraders.CustomerDetail' customer_id=order.customer.customer_id %}" class="btn btn-secondary">
+                            <i class="fa fa-user me-2"></i>View Customer
+                        </a>
+                        <a href="{% url 'DjTraders.OrderCreate' %}" class="btn btn-success">
+                            <i class="fa fa-plus me-2"></i>New Order
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,60 +1,6 @@
 {% extends "base.html" %}
 
 {% block content %}
-<<<<<<< HEAD
-<div class="container mt-5">
-    <div class="card shadow-lg mx-auto" style="max-width: 900px;">
-        <div class="card-header bg-primary text-white">
-            <h3 class="mb-0">Products List</h3>
-        </div>
-        <div class="card-body">
-            <form method="get" class="row g-3 mb-4">
-                <div class="col-md-4">
-                    <input type="text" name="name" class="form-control" placeholder="Search by Name" value="{{ name_search }}">
-                </div>
-                <div class="col-md-4">
-                    <input type="text" name="category" class="form-control" placeholder="Search by Category" value="{{ category_search }}">
-                </div>
-                <div class="col-md-4">
-                    <input type="text" name="supplier" class="form-control" placeholder="Search by Supplier" value="{{ supplier_search }}">
-                </div>
-                <div class="col-12 text-end">
-                    <button type="submit" class="btn btn-primary">Search</button>
-                </div>
-            </form>
-            <table class="table table-bordered table-hover">
-                <thead class="table-light">
-                    <tr>
-                        <th>Product ID</th>
-                        <th>Name</th>
-                        <th>Category</th>
-                        <th>Unit Price</th>
-                        <th>Units In Stock</th>
-                        <th>Supplier</th>
-                        <th>Details</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {% for product in page_obj %}
-                    <tr>
-                        <td>{{ product.product_id }}</td>
-                        <td>{{ product.product_name }}</td>
-                        <td>{{ product.category.category_name }}</td>
-                        <td>${{ product.unit_price|floatformat:2 }}</td>
-                        <td>{{ product.units_in_stock }}</td>
-                        <td>{{ product.supplier.company_name }}</td>
-                        <td>
-                            <a href="{% url 'DjTraders.ProductDetail' product_id=product.product_id %}" class="btn btn-info btn-sm">View</a>
-                        </td>
-                    </tr>
-                {% empty %}
-                    <tr>
-                        <td colspan="6" class="text-muted">No products found.</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-=======
 <style>
     .welcome-header {
         background: linear-gradient(90deg, #009688 70%, #ff9800 100%);
@@ -112,6 +58,7 @@
                                 <th>Unit Price</th>
                                 <th>Units In Stock</th>
                                 <th>Supplier</th>
+                                <th>Status</th>
                                 <th>Details</th>
                             </tr>
                         </thead>
@@ -125,36 +72,44 @@
                                 <td>{{ product.units_in_stock }}</td>
                                 <td>{{ product.supplier.company_name }}</td>
                                 <td>
+                                    {% if product.discontinued %}
+                                        <span class="badge bg-danger">Discontinued</span>
+                                    {% else %}
+                                        <span class="badge bg-success">Available</span>
+                                    {% endif %}
+                                </td>
+                                <td>
                                     <a href="{% url 'DjTraders.ProductDetail' product_id=product.product_id %}" class="btn welcome-btn btn-sm">View</a>
                                 </td>
                             </tr>
                         {% empty %}
                             <tr>
-                                <td colspan="7" class="text-muted">No products found.</td>
+                                <td colspan="8" class="text-muted">No products found.</td>
                             </tr>
                         {% endfor %}
                         </tbody>
                     </table>
->>>>>>> 5f51188 (Add product search, pagination, supplier info, and products page features)
-            <nav aria-label="Page navigation">
-                <ul class="pagination justify-content-center">
-                    {% if page_obj.has_previous %}
-                        <li class="page-item">
-                            <a class="page-link" href="?{% if name_search %}name={{ name_search }}&{% endif %}{% if category_search %}category={{ category_search }}&{% endif %}{% if supplier_search %}supplier={{ supplier_search }}&{% endif %}page={{ page_obj.previous_page_number }}">Previous</a>
-                        </li>
-                    {% else %}
-                        <li class="page-item disabled"><span class="page-link">Previous</span></li>
-                    {% endif %}
-                    <li class="page-item disabled"><span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></li>
-                    {% if page_obj.has_next %}
-                        <li class="page-item">
-                            <a class="page-link" href="?{% if name_search %}name={{ name_search }}&{% endif %}{% if category_search %}category={{ category_search }}&{% endif %}{% if supplier_search %}supplier={{ supplier_search }}&{% endif %}page={{ page_obj.next_page_number }}">Next</a>
-                        </li>
-                    {% else %}
-                        <li class="page-item disabled"><span class="page-link">Next</span></li>
-                    {% endif %}
-                </ul>
-            </nav>
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination justify-content-center">
+                            {% if page_obj.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?{% if search %}search={{ search }}&{% endif %}page={{ page_obj.previous_page_number }}">Previous</a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled"><span class="page-link">Previous</span></li>
+                            {% endif %}
+                            <li class="page-item disabled"><span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></li>
+                            {% if page_obj.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?{% if search %}search={{ search }}&{% endif %}page={{ page_obj.next_page_number }}">Next</a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled"><span class="page-link">Next</span></li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                </div>
+            </div>
         </div>
     </div>
 </div>
